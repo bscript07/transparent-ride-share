@@ -9,21 +9,21 @@ function getEnvVar(key) {
     return value;
 }
 
-const employees = [
+const drivers = [
     {
-        address: getEnvVar("EMPLOYEE_ONE__ADDRESS"),
-        name: "employee1",
+        address: getEnvVar("DRIVER_ONE__ADDRESS"),
+        name: "driver1",
     },
     {
-        address: getEnvVar("EMPLOYEE_TWO_ADDRESS"),
-        name: "employee2",
+        address: getEnvVar("DRIVER_TWO__ADDRESS"),
+        name: "driver2",
     },
 ];
 
 const config = {
-    directorPrivateKey: getEnvVar("DIRECTOR_PRIVATE_KEY"),
+    ownerPrivateKey: getEnvVar("OWNER_PRIVATE_KEY"),
     verifyingContract: getEnvVar("CLONE_ADDRESS"),
-    employees,
+    drivers,
 };
 
 module.exports = config;

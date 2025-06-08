@@ -2,39 +2,39 @@
 pragma solidity 0.8.28;
 
 import {Script, console} from "forge-std/Script.sol";
-import {ContractImplementation} from "../src/ContractImplementation.sol";
-import {ContractFactory} from "../src/ContractFactory.sol";
-
-error InvalidDirectorAddress();
-error InvalidHRAddress();
+import {Upgrades} from "openzeppelin-foundry-upgrades/Upgrades.sol";
+import {RideShareTreasury} from "../src/RideShareTreasury.sol";
 
 contract DeployScript is Script {
     function run() public {
-        vm.startBroadcast();
+        vm.startBroadcast(); // Start broadcasting the transaction
 
-        address director = vm.envAddress("DIRECTOR_ADDRESS");
-        require(director != address(0), InvalidDirectorAddress());
+        // Load deployer's environment variables
+        address owner = vm.envAddress("OWNER_ADDRESS"); // Dispatcher / signer
+        address admin = vm.envAddress("ADMIN_ADDRESS"); // Proxy admin / upgrade authority
 
-        address hr = vm.envAddress("HR_ADDRESS");
-        require(hr != address(0), InvalidHRAddress());
+        // Chainlink ETH/USD price feed address on Sepolia
+        address priceFeed = 0x694AA1769357215DE4FAC081bf1f309aDC325306;
 
-        // Deploy PayrollImplementation (logic contract)
-        ContractImplementation implementation = new ContractImplementation();
-        console.log("Contract Implementation: ", address(implementation));
+        // Deploy TransparentUpgradeableProxy + initialize it
+        address proxy = Upgrades.deployTransparentProxy(
+            "RideShareTreasury.sol", // Contract to proxy
+            admin,                   // Proxy admin
+            abi.encodeCall(RideShareTreasury.initialize, (admin, owner, priceFeed)) // Initialization call
+        );
 
-        // Deploy PayrollFactory (factory contract)
-        ContractFactory factory = new ContractFactory(address(implementation), hr);
-        console.log("Contract Factory: ", address(factory));
+        // Retrieve the logic contract (implementation) address
+        address implementation = Upgrades.getImplementationAddress(proxy);
 
-        // Add on Clone (director, priceFeed, department)
-        address priceFeed = 0x694AA1769357215DE4FAC081bf1f309aDC325306; // ETH/USD Sepolia
-        string memory department = "Administration";
+        // Log deployed addresses
+        console.log("Proxy: ", proxy);
+        console.log("Implementation: ", implementation);
 
-        address clone = factory.createProxy(director, priceFeed, department);
-        console.log("Contract Clone:", clone);
-
-        vm.stopBroadcast();
+        vm.stopBroadcast(); // Stop broadcasting
     }
 }
 
-// forge script script/deploy.s.sol:DeployScript --rpc-url sepolia --broadcast --verify --private-key <HR_PRIVATE_KEY> -vv
+
+
+//                     COMMAND FOR DEPLOY AND VERIFY SMART CONTRACTS ON SEPOLIA CHAIN
+// forge script script/deploy.s.sol:DeployScript --rpc-url sepolia --broadcast --verify -vv --private-key 0x666cc0e92635a57ec84713f9ca120d1811097c4aec86d1468068f27a6873071f
