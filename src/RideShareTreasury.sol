@@ -66,7 +66,7 @@ contract RideShareTreasury is EIP712Upgradeable, ReentrancyGuardUpgradeable {
     }
 
     /// @notice Internal helper to build the EIP-712 typed data hash from the voucher fields
-    function _hashPayStub(address driver, uint256 tripId, uint256 usdCents, uint256 expiry)
+    function _hashTripVoucher(address driver, uint256 tripId, uint256 usdCents, uint256 expiry)
         internal
         view
         returns (bytes32)
@@ -82,7 +82,7 @@ contract RideShareTreasury is EIP712Upgradeable, ReentrancyGuardUpgradeable {
         view
         returns (bool)
     {
-        bytes32 digest = _hashPayStub(driver, tripId, usdCents, expiry);
+        bytes32 digest = _hashTripVoucher(driver, tripId, usdCents, expiry);
         address signer = ECDSA.recover(digest, signature);
 
         require(signer != address(0), InvalidSignature());
