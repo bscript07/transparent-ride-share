@@ -19,7 +19,6 @@ error InsufficientBalance();
 error VoucherExpired();
 
 contract RideShareTreasury is EIP712Upgradeable, ReentrancyGuardUpgradeable {
-
     // The address authorized to sign vouchers and fund the contract
     address public owner;
 
@@ -54,10 +53,7 @@ contract RideShareTreasury is EIP712Upgradeable, ReentrancyGuardUpgradeable {
     }
 
     /// @notice Initializes the upgradeable contract with admin, owner, and priceFeed
-    function initialize(address _admin, address _owner, address _priceFeed)
-        public
-        initializer
-    {
+    function initialize(address _admin, address _owner, address _priceFeed) public initializer {
         __EIP712_init("Vouchers", "1");
         __ReentrancyGuard_init();
         admin = _admin;
@@ -71,9 +67,7 @@ contract RideShareTreasury is EIP712Upgradeable, ReentrancyGuardUpgradeable {
         view
         returns (bytes32)
     {
-        return _hashTypedDataV4(
-            keccak256(abi.encode(TRIP_VOUCHER_TYPEHASH, driver, tripId, usdCents, expiry))
-        );
+        return _hashTypedDataV4(keccak256(abi.encode(TRIP_VOUCHER_TYPEHASH, driver, tripId, usdCents, expiry)));
     }
 
     /// @notice Verifies if a given voucher signature is valid and signed by the owner
