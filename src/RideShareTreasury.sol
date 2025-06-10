@@ -106,7 +106,7 @@ contract RideShareTreasury is EIP712Upgradeable, ReentrancyGuardUpgradeable {
         bool valid = verifySignature(msg.sender, tripId, usdCents, expiry, signature);
         require(valid, InvalidSignature());
 
-        // Get the current ETH/USD price from Chainlink
+        // Get the current ETH/USD price from Chainlink data feed
         AggregatorV3Interface feed = AggregatorV3Interface(priceFeed);
         (, int256 price,,,) = feed.latestRoundData();
         require(price > 0, InvalidPrice());
