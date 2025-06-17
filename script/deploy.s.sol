@@ -35,4 +35,4 @@ contract DeployScript is Script {
 }
 
 //                     COMMAND FOR DEPLOY AND VERIFY SMART CONTRACTS ON SEPOLIA CHAIN
-// forge script script/deploy.s.sol:DeployScript --rpc-url sepolia --broadcast --verify -vv --private-key 0x666cc0e92635a57ec84713f9ca120d1811097c4aec86d1468068f27a6873071f
+// forge script script/deploy.s.sol:DeployScript --rpc-url sepolia --broadcast --verify -vv --private-key <ADMIN_PRIVATE_KEY>
